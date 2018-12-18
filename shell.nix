@@ -7,6 +7,7 @@ pkgs.stdenv.mkDerivation {
   buildInputs = [
     pkgconfig
     zlib
+    openssl
   ];
   shellHook = ''
     export LD_LIBRARY_PATH="${zlib.out}/lib:$LD_LIBRARY_PATH"
