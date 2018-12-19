@@ -12,5 +12,6 @@ pkgs.stdenv.mkDerivation {
   shellHook = ''
     export LD_LIBRARY_PATH="${zlib.out}/lib:$LD_LIBRARY_PATH"
     export PATH=~/.cabal/bin:$PATH
+    export HADDOCK_PATH="dist/build/haddock/haddock"
   '';
 }
