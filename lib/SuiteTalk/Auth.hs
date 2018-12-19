@@ -2,7 +2,7 @@
 -- Module      : SuiteTalk.Auth
 -- Copyright   : (c) 2018 Chris D'Aloisio
 --
--- License     : MPL2-style
+-- License     : MPL2
 -- Maintainer  : chris.daloisio@bellroy.com
 -- Portability : portable
 --
