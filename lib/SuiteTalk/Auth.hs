@@ -62,6 +62,8 @@ generateTokenPassport ::
     -> TokenSecret -- ^ Netsuite user access token secret
     -> IO TokenPassport
 generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret =
-    pure $ TokenPassport account consumerKey tokenId "somenonce" 123 signature
+    pure $ TokenPassport account consumerKey tokenId nonce currentTime signature
   where
     signature = Signature HMACSHA256 "somesig"
+    nonce = "somenonce"
+    currentTime = 123
