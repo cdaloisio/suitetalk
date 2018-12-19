@@ -24,6 +24,8 @@ library suitetalk-lib
   build-depends:
       base >=4.11 && <4.12
     , text ==1.2.3.*
+    , cryptonite == 0.25.*
+    , time == 1.9.*
   hs-source-dirs:
     lib
   default-language:

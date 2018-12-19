@@ -18,6 +18,9 @@ module SuiteTalk.Auth
     , generateTokenPassport
     ) where
 
+import           Data.Time.Clock       (nominalDiffTimeToSeconds)
+import           Data.Time.Clock.POSIX (getPOSIXTime)
+
 -- * Token Authentication
 --
 -- | Data type that contains all values for a valid TokenPassport
@@ -61,9 +64,9 @@ generateTokenPassport ::
     -> TokenId -- ^ Netsuite user access token ID
     -> TokenSecret -- ^ Netsuite user access token secret
     -> IO TokenPassport
-generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret =
-    pure $ TokenPassport account consumerKey tokenId nonce currentTime signature
+generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret = do
+    currentTime <- getPOSIXTime
+    pure $ TokenPassport account consumerKey tokenId nonce (_ currentTime) signature
   where
     signature = Signature HMACSHA256 "somesig"
     nonce = "somenonce"
-    currentTime = 123
