@@ -2,7 +2,7 @@
 -- Module      : SuiteTalk.Auth
 -- Copyright   : (c) 2018 Chris D'Aloisio
 --
--- License     : MPL2
+-- License     : MPL-2.0
 -- Maintainer  : chris.daloisio@bellroy.com
 -- Portability : portable
 --
@@ -61,4 +61,7 @@ generateTokenPassport ::
     -> TokenId -- ^ Netsuite user access token ID
     -> TokenSecret -- ^ Netsuite user access token secret
     -> IO TokenPassport
-generateTokenPassport = undefined
+generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret =
+    pure $ TokenPassport account consumerKey tokenId "somenonce" 123 signature
+  where
+    signature = Signature HMACSHA256 "somesig"

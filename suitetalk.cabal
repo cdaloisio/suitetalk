@@ -15,7 +15,7 @@ copyright:           2018 Chris D'Aloisio
 build-type:          Simple
 extra-source-files:  ChangeLog.md
 
-library
+library suitetalk-lib
   exposed-modules:
     SuiteTalk.Auth
   -- other-modules:
@@ -55,5 +55,6 @@ test-suite test
     test.hs
   build-depends:
       base >= 4 && < 5
+    , suitetalk-lib
     , tasty == 1.2.*
     , tasty-hunit == 0.10.0.*
