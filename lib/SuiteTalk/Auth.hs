@@ -18,8 +18,11 @@ module SuiteTalk.Auth
     , generateTokenPassport
     ) where
 
+import           Crypto.Hash
+import qualified Data.ByteString.Char8 as BS (pack)
 import           Data.Time.Clock       (nominalDiffTimeToSeconds)
 import           Data.Time.Clock.POSIX (getPOSIXTime)
+import           System.Random         (newStdGen)
 
 -- * Token Authentication
 --
@@ -65,8 +68,18 @@ generateTokenPassport ::
     -> TokenSecret -- ^ Netsuite user access token secret
     -> IO TokenPassport
 generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret = do
-    currentTime <- getPOSIXTime
-    pure $ TokenPassport account consumerKey tokenId nonce (_ currentTime) signature
+    currentTime <- getCurrentTime
+    nonce <- generateNonce
+    pure $ TokenPassport account consumerKey tokenId nonce currentTime signature
   where
     signature = Signature HMACSHA256 "somesig"
-    nonce = "somenonce"
+
+getCurrentTime :: IO Timestamp
+getCurrentTime = do
+    currentTime <- getPOSIXTime
+    pure $ round $ realToFrac currentTime
+
+generateNonce :: IO String
+generateNonce = do
+    g <- newStdGen
+    pure $ take 20 $ show (hash (BS.pack $ show g) :: Digest SHA1)
