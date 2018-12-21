@@ -72,7 +72,8 @@ generateTokenPassport ::
 generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret = do
     currentTime <- getCurrentTime
     nonce <- generateNonce
-    signature <- generateSignature consumerSecret tokenSecret
+    signature <-
+        generateSignature consumerSecret tokenSecret account consumerKey tokenId nonce currentTime
     pure $ TokenPassport account consumerKey tokenId nonce currentTime signature
 
 getCurrentTime :: IO Timestamp
@@ -85,9 +86,25 @@ generateNonce = do
     g <- newStdGen
     pure "str"
 
-generateSignature :: ConsumerSecret -> TokenSecret -> IO Signature
-generateSignature consumerSecret tokenSecret =
-    let signatureData = "data" :: BS.ByteString
+generateSignature ::
+       ConsumerSecret
+    -> TokenSecret
+    -> Account
+    -> ConsumerKey
+    -> TokenId
+    -> Nonce
+    -> Timestamp
+    -> IO Signature
+generateSignature consumerSecret tokenSecret account consumerKey tokenId nonce timestamp =
+    let signatureData =
+            B.intercalate
+                "&"
+                [ BS.pack account
+                , BS.pack consumerKey
+                , BS.pack tokenId
+                , BS.pack nonce
+                , BS.pack $ show timestamp
+                ] :: BS.ByteString
         signatureKey =
             B.intercalate "&" [BS.pack consumerSecret, BS.pack tokenSecret] :: BS.ByteString
         value = show $ hmacGetDigest (hmac signatureKey signatureData :: HMAC SHA1)
