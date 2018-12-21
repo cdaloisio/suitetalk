@@ -19,7 +19,9 @@ module SuiteTalk.Auth
     ) where
 
 import           Crypto.Hash
-import qualified Data.ByteString.Char8 as BS (pack)
+import           Crypto.MAC.HMAC
+import qualified Data.ByteString       as B (intercalate)
+import qualified Data.ByteString.Char8 as BS (ByteString, pack)
 import           Data.Time.Clock       (nominalDiffTimeToSeconds)
 import           Data.Time.Clock.POSIX (getPOSIXTime)
 import           System.Random         (newStdGen)
@@ -70,9 +72,8 @@ generateTokenPassport ::
 generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret = do
     currentTime <- getCurrentTime
     nonce <- generateNonce
+    signature <- generateSignature consumerSecret tokenSecret
     pure $ TokenPassport account consumerKey tokenId nonce currentTime signature
-  where
-    signature = Signature HMACSHA256 "somesig"
 
 getCurrentTime :: IO Timestamp
 getCurrentTime = do
@@ -82,4 +83,12 @@ getCurrentTime = do
 generateNonce :: IO String
 generateNonce = do
     g <- newStdGen
-    pure $ take 20 $ show (hash (BS.pack $ show g) :: Digest SHA1)
+    pure "str"
+
+generateSignature :: ConsumerSecret -> TokenSecret -> IO Signature
+generateSignature consumerSecret tokenSecret =
+    let signatureData = "data" :: BS.ByteString
+        signatureKey =
+            B.intercalate "&" [BS.pack consumerSecret, BS.pack tokenSecret] :: BS.ByteString
+        value = show $ hmacGetDigest (hmac signatureKey signatureData :: HMAC SHA1)
+     in pure $ Signature HMACSHA256 value
