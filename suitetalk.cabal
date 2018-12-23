@@ -18,6 +18,7 @@ extra-source-files:  ChangeLog.md
 library suitetalk-lib
   exposed-modules:
     SuiteTalk.Auth
+    SuiteTalk.Auth.Types
     SuiteTalk.Auth.Internal
   -- other-modules:
   -- other-extensions:

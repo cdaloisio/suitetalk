@@ -18,13 +18,8 @@ module SuiteTalk.Auth
     , generateTokenPassport
     ) where
 
-import           Crypto.Hash
-import           Crypto.MAC.HMAC
-import qualified Data.ByteString       as B (intercalate)
-import qualified Data.ByteString.Char8 as BS (ByteString, pack)
-import           Data.Time.Clock       (nominalDiffTimeToSeconds)
-import           Data.Time.Clock.POSIX (getPOSIXTime)
-import           System.Random         (newStdGen)
+import           SuiteTalk.Auth.Internal
+import           SuiteTalk.Auth.Types
 
 -- * Token Authentication
 --
@@ -36,29 +31,6 @@ data TokenPassport =
                   Nonce
                   Timestamp
                   Signature
-
-type Account = String
-
-type ConsumerKey = String
-
-type Nonce = String
-
-type Timestamp = Int
-
-data Signature =
-    Signature Algorithm
-              Value
-
-data Algorithm =
-    HMACSHA256
-
-type Value = String
-
-type ConsumerSecret = String
-
-type TokenId = String
-
-type TokenSecret = String
 
 -- | Create a valid tokenPassport.
 -- You will want to use this to pass in the result to your SOAP client.
@@ -72,40 +44,6 @@ generateTokenPassport ::
 generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret = do
     currentTime <- getCurrentTime
     nonce <- generateNonce
-    signature <-
-        generateSignature consumerSecret tokenSecret account consumerKey tokenId nonce currentTime
-    pure $ TokenPassport account consumerKey tokenId nonce currentTime signature
-
-getCurrentTime :: IO Timestamp
-getCurrentTime = do
-    currentTime <- getPOSIXTime
-    pure $ round $ realToFrac currentTime
-
-generateNonce :: IO String
-generateNonce = do
-    g <- newStdGen
-    pure "str"
-
-generateSignature ::
-       ConsumerSecret
-    -> TokenSecret
-    -> Account
-    -> ConsumerKey
-    -> TokenId
-    -> Nonce
-    -> Timestamp
-    -> IO Signature
-generateSignature consumerSecret tokenSecret account consumerKey tokenId nonce timestamp =
-    let signatureData =
-            B.intercalate
-                "&"
-                [ BS.pack account
-                , BS.pack consumerKey
-                , BS.pack tokenId
-                , BS.pack nonce
-                , BS.pack $ show timestamp
-                ] :: BS.ByteString
-        signatureKey =
-            B.intercalate "&" [BS.pack consumerSecret, BS.pack tokenSecret] :: BS.ByteString
-        value = show $ hmacGetDigest (hmac signatureKey signatureData :: HMAC SHA1)
-     in pure $ Signature HMACSHA256 value
+    pure $ TokenPassport account consumerKey tokenId nonce currentTime (signature nonce currentTime)
+  where
+    signature = generateSignature consumerSecret tokenSecret account consumerKey tokenId
