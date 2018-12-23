@@ -6,7 +6,18 @@
 -- Maintainer  : chris.daloisio@bellroy.com
 -- Portability : portable
 --
-module SuiteTalk.Auth.Types where
+module SuiteTalk.Auth.Types
+    ( Account
+    , ConsumerKey
+    , Nonce
+    , Timestamp
+    , Algorithm(..)
+    , Signature(..)
+    , TokenId
+    , TokenSecret
+    , ConsumerSecret
+    , Value
+    ) where
 
 type Account = String
 

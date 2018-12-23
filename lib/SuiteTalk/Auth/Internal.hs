@@ -8,7 +8,11 @@
 --
 -- Contains helpers for generating a signature
 --
-module SuiteTalk.Auth.Internal where
+module SuiteTalk.Auth.Internal
+    ( generateSignature
+    , getCurrentTime
+    , generateNonce
+    ) where
 
 import           Crypto.Hash
 import           Crypto.MAC.HMAC
