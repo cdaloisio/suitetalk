@@ -26,7 +26,6 @@ library suitetalk-lib
       base >=4.11 && <4.12
     , bytestring
     , random
-    , text ==1.2.3.*
     , cryptonite == 0.25.*
     , time == 1.8.*
   hs-source-dirs:
