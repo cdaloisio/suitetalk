@@ -28,7 +28,7 @@ library suitetalk-lib
     , random
     , text ==1.2.3.*
     , cryptonite == 0.25.*
-    , time == 1.9.*
+    , time == 1.8.*
   hs-source-dirs:
     lib
   default-language:

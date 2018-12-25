@@ -18,7 +18,6 @@ import           Crypto.Hash
 import           Crypto.MAC.HMAC
 import qualified Data.ByteString       as B (intercalate)
 import qualified Data.ByteString.Char8 as BS (ByteString, pack)
-import           Data.Time.Clock       (nominalDiffTimeToSeconds)
 import           Data.Time.Clock.POSIX (getPOSIXTime)
 import           System.Random         (newStdGen)
 
@@ -50,7 +49,7 @@ getCurrentTime = do
 generateNonce :: IO String
 generateNonce = do
     g <- newStdGen
-    pure "str"
+    pure $ take 20 $ show (hash $ BS.pack $ show g :: Digest SHA1)
 
 generateSignatureKey :: ConsumerSecret -> TokenSecret -> BS.ByteString
 generateSignatureKey consumerSecret tokenSecret =
