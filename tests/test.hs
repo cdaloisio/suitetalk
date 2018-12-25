@@ -10,12 +10,15 @@ tests = testGroup "Tests" [unitTests]
 
 unitTests =
     testGroup
-        "SuiteTalk.Auth.Internal.generateNonce"
-        [ testCase "check length" $ do
-              nonce <- generateNonce
-              length nonce @?= 20
-        , testCase "check duplicates" $ do
-              nonce <- generateNonce
-              nonce' <- generateNonce
-              (nonce /= nonce') @? nonce <> " - should be different to - " <> nonce'
+        "SuiteTalk.Auth.Internal"
+        [ testGroup
+              "generateNonce"
+              [ testCase "check length" $ do
+                    nonce <- generateNonce
+                    length nonce @?= 20
+              , testCase "check duplicates" $ do
+                    nonce <- generateNonce
+                    nonce' <- generateNonce
+                    (nonce /= nonce') @? nonce <> " - should be different to - " <> nonce'
+              ]
         ]
