@@ -10,8 +10,8 @@
 --
 module SuiteTalk.Auth.Internal
     ( generateSignature
-    , getCurrentTime
     , generateNonce
+    , getCurrentTime
     ) where
 
 import           Crypto.Hash
@@ -41,15 +41,16 @@ generateSignature consumerSecret tokenSecret account consumerKey tokenId nonce t
         value = show $ hmacGetDigest (hmac signatureKey signatureData :: HMAC SHA1)
      in Signature HMACSHA256 value
 
+generateNonce :: IO String
+generateNonce = do
+    g <- newStdGen
+    let randomHash = show (hash $ BS.pack $ show g :: Digest SHA1)
+    pure $ take 20 randomHash
+
 getCurrentTime :: IO Timestamp
 getCurrentTime = do
     currentTime <- getPOSIXTime
     pure $ round $ realToFrac currentTime
-
-generateNonce :: IO String
-generateNonce = do
-    g <- newStdGen
-    pure $ take 20 $ show (hash $ BS.pack $ show g :: Digest SHA1)
 
 generateSignatureKey :: ConsumerSecret -> TokenSecret -> BS.ByteString
 generateSignatureKey consumerSecret tokenSecret =

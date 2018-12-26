@@ -30,9 +30,11 @@ type Timestamp = Int
 data Signature =
     Signature Algorithm
               Value
+    deriving (Eq, Show)
 
 data Algorithm =
     HMACSHA256
+    deriving (Eq, Show)
 
 type Value = String
 
