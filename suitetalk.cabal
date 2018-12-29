@@ -20,12 +20,15 @@ library suitetalk-lib
     SuiteTalk.Auth
     SuiteTalk.Auth.Types
     SuiteTalk.Auth.Internal
+    SuiteTalk.XML
   -- other-modules:
   -- other-extensions:
   build-depends:
       base >=4.11 && <4.12
     , bytestring
     , random
+    , xml-conduit
+    , xml-conduit-writer
     , cryptonite == 0.25.*
     , time == 1.8.*
   hs-source-dirs:
@@ -41,7 +44,9 @@ executable suitetalk
   -- other-modules:
   -- other-extensions:
   build-depends:
-    base >=4.11 && <4.12
+      base >=4.11 && <4.12
+    , suitetalk-lib
+    , text
   hs-source-dirs:
     src
   default-language:
