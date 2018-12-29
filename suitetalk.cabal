@@ -29,6 +29,7 @@ library suitetalk-lib
     , random
     , xml-conduit
     , xml-conduit-writer
+    , text
     , cryptonite == 0.25.*
     , time == 1.8.*
   hs-source-dirs:

@@ -14,15 +14,33 @@ module SuiteTalk.XML
     , Header(..)
     ) where
 
-import           Text.XML        (Document)
-import           Text.XML.Writer (ToXML, soap)
+import           Text.XML             (Document)
+import           Text.XML.Writer      (ToXML, XML, element, elementA, soap)
 
-import           SuiteTalk.Auth  (TokenPassport)
+-- TODO: Remove after testing
+import           Data.Text            (Text)
+import qualified Data.Text            as T
+
+import           SuiteTalk.Auth       (TokenPassport (..))
+import           SuiteTalk.Auth.Types (Signature (..))
 
 newtype Header =
     Header TokenPassport
 
-type Headers = [Header]
+build :: (ToXML body) => Header -> body -> Document
+build header = soap (buildHeader header)
 
-build :: (ToXML headers, ToXML body) => headers -> body -> Document
-build = soap
+buildHeader :: Header -> XML
+buildHeader header =
+    case header of
+        Header (TokenPassport account consumerKey tokenId nonce timestamp (Signature algorithm value)) ->
+            element "platformMsgs:tokenPassport" $ do
+                element "platformCore:account" (T.pack account)
+                element "platformCore:consumerKey" (T.pack consumerKey)
+                element "platformCore:token" (T.pack tokenId)
+                element "platformCore:nonce" (T.pack nonce)
+                element "platformCore:timestamp" (T.pack $ show timestamp)
+                elementA
+                    "platformCore:signature"
+                    [("algorithm", T.pack $ show algorithm)]
+                    (T.pack value)

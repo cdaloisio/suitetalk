@@ -10,8 +10,7 @@ import           SuiteTalk.XML  (Header (..), build)
 main :: IO ()
 main = do
     tokenPassport <- generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret
-    print $ build ("" :: Text) ("" :: Text)
-    putStrLn "TODO"
+    print $ build (Header tokenPassport) ("" :: Text)
 
 -- TODO: Remove these and add as env variables?
 -- Some sample information for testing
