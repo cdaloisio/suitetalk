@@ -34,7 +34,10 @@ data Signature =
 
 data Algorithm =
     HMACSHA256
-    deriving (Eq, Show)
+    deriving (Eq)
+
+instance Show Algorithm where
+    show HMACSHA256 = "HMAC-SHA256"
 
 type Value = String
 
