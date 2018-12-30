@@ -15,8 +15,7 @@ module SuiteTalk.XML
     ) where
 
 import qualified Data.Text            as T
-import           Text.XML             (Document)
-import           Text.XML.Writer      (ToXML, XML, element, elementA)
+import           Text.XML.Writer      (XML, element, elementA)
 
 import           SuiteTalk.Auth       (TokenPassport (..))
 import           SuiteTalk.Auth.Types (Signature (..))
@@ -24,6 +23,7 @@ import           SuiteTalk.Auth.Types (Signature (..))
 newtype Header =
     Header TokenPassport
 
+-- | Take a @Header@ (which just wraps the TokenPassport) and convert it to XML
 buildHeader :: Header -> XML
 buildHeader header =
     case header of
