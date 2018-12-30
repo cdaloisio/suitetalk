@@ -14,7 +14,7 @@ module SuiteTalk.SOAP
 
 import           Network.HTTP.Client.TLS     (tlsManagerSettings)
 import           Network.SOAP                (ResponseParser (DocumentParser), invokeWS)
-import           Network.SOAP.Transport.HTTP (initTransportWithM)
+import           Network.SOAP.Transport.HTTP (initTransportWithM, printBody, printRequest)
 import           Text.XML                    (Document)
 import           Text.XML.Writer             (ToXML)
 
@@ -26,7 +26,7 @@ send ::
     -> body -- ^ SOAPAction body
     -> IO Document
 send soapAction header body = do
-    transport <- initTransportWithM managerSettings endpointURL pure pure
+    transport <- initTransportWithM managerSettings endpointURL printRequest printBody
     invokeWS transport soapAction header body documentParser
   where
     endpointURL = "https://webservices.netsuite.com/services/NetSuitePort_2018_1"

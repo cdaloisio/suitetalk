@@ -14,7 +14,7 @@ main = do
     let header = buildHeader $ Header tokenPassport
     let body = "" :: Text
     response <- send "getAll" header body
-    print response
+    putStrLn "Done"
 
 -- TODO: Remove these and add as env variables?
 -- Some sample information for testing
