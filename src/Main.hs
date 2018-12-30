@@ -5,12 +5,16 @@ module Main where
 import           Data.Text      (Text)
 
 import           SuiteTalk.Auth (generateTokenPassport)
-import           SuiteTalk.XML  (Header (..), build)
+import           SuiteTalk.SOAP (send)
+import           SuiteTalk.XML  (Header (..), buildHeader)
 
 main :: IO ()
 main = do
     tokenPassport <- generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret
-    print $ build (Header tokenPassport) ("" :: Text)
+    let header = buildHeader $ Header tokenPassport
+    let body = "" :: Text
+    response <- send "getAll" header body
+    print response
 
 -- TODO: Remove these and add as env variables?
 -- Some sample information for testing

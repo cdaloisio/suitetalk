@@ -10,25 +10,19 @@
 -- Netsuite.
 --
 module SuiteTalk.XML
-    ( build
+    ( buildHeader
     , Header(..)
     ) where
 
-import           Text.XML             (Document)
-import           Text.XML.Writer      (ToXML, XML, element, elementA, soap)
-
--- TODO: Remove after testing
-import           Data.Text            (Text)
 import qualified Data.Text            as T
+import           Text.XML             (Document)
+import           Text.XML.Writer      (ToXML, XML, element, elementA)
 
 import           SuiteTalk.Auth       (TokenPassport (..))
 import           SuiteTalk.Auth.Types (Signature (..))
 
 newtype Header =
     Header TokenPassport
-
-build :: (ToXML body) => Header -> body -> Document
-build header = soap (buildHeader header)
 
 buildHeader :: Header -> XML
 buildHeader header =

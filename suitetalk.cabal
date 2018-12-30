@@ -20,6 +20,7 @@ library suitetalk-lib
     SuiteTalk.Auth
     SuiteTalk.Auth.Types
     SuiteTalk.Auth.Internal
+    SuiteTalk.SOAP
     SuiteTalk.XML
   -- other-modules:
   -- other-extensions:
@@ -30,6 +31,9 @@ library suitetalk-lib
     , xml-conduit
     , xml-conduit-writer
     , text
+    , soap
+    , http-client
+    , http-client-tls
     , cryptonite == 0.25.*
     , time == 1.8.*
   hs-source-dirs:
@@ -38,6 +42,8 @@ library suitetalk-lib
     Haskell2010
   default-extensions:
     OverloadedStrings
+  ghc-options:
+    -Wall
 
 executable suitetalk
   main-is:
@@ -52,8 +58,6 @@ executable suitetalk
     src
   default-language:
     Haskell2010
-  ghc-options:
-    -Wall
 
 test-suite test
   default-language:
