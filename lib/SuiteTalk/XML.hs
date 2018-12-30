@@ -23,6 +23,9 @@ import           SuiteTalk.Auth.Types (Signature (..))
 newtype Header =
     Header TokenPassport
 
+-- | Build a document using the WSDL for namespace generation
+buildDocument = undefined
+
 -- | Take a @Header@ (which just wraps the TokenPassport) and convert it to XML
 buildHeader :: Header -> XML
 buildHeader header =

@@ -12,9 +12,11 @@ module SuiteTalk.SOAP
     ( send
     ) where
 
+-- TODO swap out the SOAP utilities for req only and use your own builder
 import           Network.HTTP.Client.TLS     (tlsManagerSettings)
 import           Network.SOAP                (ResponseParser (DocumentParser), invokeWS)
 import           Network.SOAP.Transport.HTTP (initTransportWithM, printBody, printRequest)
+
 import           Text.XML                    (Document)
 import           Text.XML.Writer             (ToXML)
 
