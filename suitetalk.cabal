@@ -21,6 +21,7 @@ library suitetalk-lib
     SuiteTalk.Auth.Types
     SuiteTalk.Auth.Internal
     SuiteTalk.SOAP
+    SuiteTalk.WSDL
     SuiteTalk.XML
   -- other-modules:
   -- other-extensions:
