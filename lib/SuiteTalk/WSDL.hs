@@ -33,7 +33,7 @@ type Identifier = String
 type Host = String
 
 type Port = String
-
+{-
 fetch :: IO BsResponse
 fetch =
     runReq def $
@@ -45,3 +45,4 @@ fetch =
 
 parse :: BsResponse -> Either SomeException Document
 parse = parseLBS def . BS.fromStrict . responseBody
+-}

@@ -28,13 +28,14 @@ library suitetalk-lib
   build-depends:
       base >=4.11 && <4.12
     , bytestring
-    , random
-    , xml-conduit
-    , xml-conduit-writer
-    , text
-    , soap
+    , data-default
     , http-client
     , http-client-tls
+    , random
+    , soap
+    , text
+    , xml-conduit
+    , xml-conduit-writer
     , cryptonite == 0.25.*
     , time == 1.8.*
   hs-source-dirs:
