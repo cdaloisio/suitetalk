@@ -12,8 +12,8 @@ module SuiteTalk.SOAP
     ( send
     ) where
 
-import  Control.Monad (unless)
-import Data.Default (def)
+import           Control.Monad (unless)
+import           Data.Default (def)
 import           Network.HTTP.Client.TLS     (tlsManagerSettings)
 import           Network.SOAP                (ResponseParser (DocumentParser), runResponseParser)
 import           Network.SOAP.Transport (Transport)
@@ -69,6 +69,6 @@ soap header body = document (sn "Envelope") $ do
         node . NodeElement $! Element (sn "Header") def headerContent
     element (sn "Body") (toXML body)
 
-    where sn n = Name n (Just ns) (Just "env")
+    where sn n = Name n (Just ns) (Just "soapenv")
           ns = "http://schemas.xmlsoap.org/soap/envelope/"
           headerContent = render (toXML header)

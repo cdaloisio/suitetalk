@@ -11,9 +11,11 @@
 --
 module SuiteTalk.XML
     ( buildHeader
+    , buildBody
     , Header(..)
     ) where
 
+import           Data.Text            (Text)
 import qualified Data.Text            as T
 import           Text.XML.Writer      (XML, element, elementA)
 
@@ -26,18 +28,18 @@ newtype Header =
 -- | Build a document using the WSDL for namespace generation
 buildDocument = undefined
 
+buildBody :: XML
+buildBody = element "getAll" $ do elementA "record" [("recordType", T.pack "state")] ("" :: Text)
+
 -- | Take a @Header@ (which just wraps the TokenPassport) and convert it to XML
 buildHeader :: Header -> XML
 buildHeader header =
     case header of
         Header (TokenPassport account consumerKey tokenId nonce timestamp (Signature algorithm value)) ->
-            element "platformMsgs:tokenPassport" $ do
-                element "platformCore:account" (T.pack account)
-                element "platformCore:consumerKey" (T.pack consumerKey)
-                element "platformCore:token" (T.pack tokenId)
-                element "platformCore:nonce" (T.pack nonce)
-                element "platformCore:timestamp" (T.pack $ show timestamp)
-                elementA
-                    "platformCore:signature"
-                    [("algorithm", T.pack $ show algorithm)]
-                    (T.pack value)
+            element "tokenPassport" $ do
+                element "account" (T.pack account)
+                element "consumerKey" (T.pack consumerKey)
+                element "token" (T.pack tokenId)
+                element "nonce" (T.pack nonce)
+                element "timestamp" (T.pack $ show timestamp)
+                elementA "signature" [("algorithm", T.pack $ show algorithm)] (T.pack value)

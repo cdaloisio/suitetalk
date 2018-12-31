@@ -6,13 +6,13 @@ import           Data.Text      (Text)
 
 import           SuiteTalk.Auth (generateTokenPassport)
 import           SuiteTalk.SOAP (send)
-import           SuiteTalk.XML  (Header (..), buildHeader)
+import           SuiteTalk.XML  (Header (..), buildBody, buildHeader)
 
 main :: IO ()
 main = do
     tokenPassport <- generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret
     let header = buildHeader $ Header tokenPassport
-    let body = "" :: Text
+    let body = buildBody
     response <- send "getAll" header body
     putStrLn "Done"
 
