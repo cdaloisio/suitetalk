@@ -14,8 +14,12 @@ main = do
     tokenPassport <- generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret
     let header = buildHeader $ Header tokenPassport
     let body = buildBody
-    let wsdl = WSDL (Endpoint "https://webservices.netsuite.com/services/NetSuitePort_2018_1" "") []
+    let wsdl =
+            WSDL
+                (Endpoint "https://webservices.netsuite.com/services/NetSuitePort_2018_1" "")
+                ["getAll"]
     response <- send wsdl "getAll" header body
+    print response
     putStrLn "Done"
 
 -- TODO: Remove these and add as env variables?

@@ -20,6 +20,10 @@ import           Text.XML.Writer             (ToXML)
 
 import           SuiteTalk.WSDL              (WSDL (..), mkEndpointURL)
 
+data Error =
+    InvalidAction
+    deriving (Show)
+
 -- | Make a request to NetSuite via SuiteTalk
 send ::
        (ToXML header, ToXML body)
@@ -27,11 +31,16 @@ send ::
     -> String -- ^ SOAPAction to run
     -> header -- ^ SOAPAction header
     -> body -- ^ SOAPAction body
-    -> IO Document
+    -> IO (Either Error Document)
 send (WSDL endpoint operations) soapAction header body = do
     transport <- initTransportWithM managerSettings endpointURL printRequest printBody
-    invokeWS transport soapAction header body documentParser
+    if validAction soapAction operations
+        then Right <$> invokeWS transport soapAction header body documentParser
+        else pure $ Left InvalidAction
   where
     endpointURL = mkEndpointURL endpoint
     managerSettings = tlsManagerSettings
     documentParser = DocumentParser id
+
+validAction :: String -> [String] -> Bool
+validAction action operations = action `elem` operations
