@@ -46,7 +46,9 @@ generateWSDLfromURL url =
     (either (const $ Left ParseError) documentToWSDL . parseResponse) <$> fetchWSDL url
 
 documentToWSDL :: Document -> Either Error WSDL
-documentToWSDL document = Right $ WSDL (Endpoint "" "") []
+documentToWSDL document =
+    Right $
+    WSDL (Endpoint "https://webservices.netsuite.com/services/NetSuitePort_2018_1" "") ["getAll"]
 
 parseResponse :: Response B8.ByteString -> Either SomeException Document
 parseResponse = parseLBS def . BS.fromStrict . getResponseBody

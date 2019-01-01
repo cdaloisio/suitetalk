@@ -3,24 +3,25 @@
 module Main where
 
 import           Data.Text      (Text)
+import           System.Exit
 
 import           SuiteTalk.Auth (generateTokenPassport)
 import           SuiteTalk.SOAP (send)
-import           SuiteTalk.WSDL (Endpoint (..), WSDL (..))
+import           SuiteTalk.WSDL (Endpoint (..), WSDL (..), generateWSDLfromURL)
 import           SuiteTalk.XML  (Header (Header), Search (Search), buildBody, buildHeader)
 
 main :: IO ()
 main = do
     tokenPassport <- generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret
-    let header = buildHeader $ Header tokenPassport
-    let body = buildBody $ Search "record" "state" ""
-    let wsdl =
-            WSDL
-                (Endpoint "https://webservices.netsuite.com/services/NetSuitePort_2018_1" "")
-                ["getAll"]
-    response <- send wsdl "getAll" header body
-    print response
-    putStrLn "Done"
+    wsdl <- generateWSDLfromURL "https://webservices.netsuite.com/wsdl/v2018_1_0/netsuite.wsdl"
+    case wsdl of
+        Left _ -> exitFailure
+        Right wsdl' -> do
+            let header = buildHeader $ Header tokenPassport
+            let body = buildBody $ Search "record" "state" ""
+            response <- send wsdl' "getAll" header body
+            print response
+            putStrLn "Done"
 
 -- TODO: Remove these and add as env variables?
 -- Some sample information for testing
