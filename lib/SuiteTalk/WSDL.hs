@@ -13,6 +13,12 @@
 --
 module SuiteTalk.WSDL where
 
+import           Control.Exception
+import qualified Data.ByteString.Char8 as B8
+import qualified Data.ByteString.Lazy  as BS
+import           Network.HTTP.Simple
+import           Text.XML
+
 data WSDL =
     WSDL Endpoint
          [Operation]
@@ -30,17 +36,22 @@ type Port = String
 mkEndpointURL :: Endpoint -> String
 mkEndpointURL (Endpoint host "")   = host
 mkEndpointURL (Endpoint host port) = host ++ ":" ++ port
--- TODO: Fetch and parse the WSDL url into WSDL datatype
-{-
-fetch :: IO BsResponse
-fetch =
-    runReq def $
-    req GET
-        (https "webservices.netsuite.com" /: "wsdl" /: "v2018_1_0" /: "netsuite.wsdl")
-        NoReqBody
-        bsResponse
-        mempty
 
-parse :: BsResponse -> Either SomeException Document
-parse = parseLBS def . BS.fromStrict . responseBody
--}
+data Error
+    = ParseError
+    | UnknownError
+
+generateWSDLfromURL :: String -> IO (Either Error WSDL)
+generateWSDLfromURL url =
+    (either (const $ Left ParseError) documentToWSDL . parseResponse) <$> fetchWSDL url
+
+documentToWSDL :: Document -> Either Error WSDL
+documentToWSDL document = Right $ WSDL (Endpoint "" "") []
+
+parseResponse :: Response B8.ByteString -> Either SomeException Document
+parseResponse = parseLBS def . BS.fromStrict . getResponseBody
+
+fetchWSDL :: String -> IO (Response B8.ByteString)
+fetchWSDL wsdlUrl =
+    let request = parseRequest_ wsdlUrl
+     in httpBS request

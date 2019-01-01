@@ -31,6 +31,7 @@ library suitetalk-lib
     , data-default
     , http-client
     , http-client-tls
+    , http-conduit
     , random
     , soap
     , text
