@@ -18,17 +18,20 @@ import           Network.SOAP.Transport.HTTP (initTransportWithM, printBody, pri
 import           Text.XML                    (Document)
 import           Text.XML.Writer             (ToXML)
 
+import           SuiteTalk.WSDL              (WSDL (..), mkEndpointURL)
+
 -- | Make a request to NetSuite via SuiteTalk
 send ::
        (ToXML header, ToXML body)
-    => String -- ^ SOAPAction
+    => WSDL -- ^ WSDL containing endpoint and operations
+    -> String -- ^ SOAPAction to run
     -> header -- ^ SOAPAction header
     -> body -- ^ SOAPAction body
     -> IO Document
-send soapAction header body = do
+send (WSDL endpoint operations) soapAction header body = do
     transport <- initTransportWithM managerSettings endpointURL printRequest printBody
     invokeWS transport soapAction header body documentParser
   where
-    endpointURL = "https://webservices.netsuite.com/services/NetSuitePort_2018_1"
+    endpointURL = mkEndpointURL endpoint
     managerSettings = tlsManagerSettings
     documentParser = DocumentParser id

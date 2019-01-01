@@ -6,6 +6,7 @@ import           Data.Text      (Text)
 
 import           SuiteTalk.Auth (generateTokenPassport)
 import           SuiteTalk.SOAP (send)
+import           SuiteTalk.WSDL (Endpoint (..), WSDL (..))
 import           SuiteTalk.XML  (Header (..), buildBody, buildHeader)
 
 main :: IO ()
@@ -13,7 +14,8 @@ main = do
     tokenPassport <- generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret
     let header = buildHeader $ Header tokenPassport
     let body = buildBody
-    response <- send "getAll" header body
+    let wsdl = WSDL (Endpoint "https://webservices.netsuite.com/services/NetSuitePort_2018_1" "") []
+    response <- send wsdl "getAll" header body
     putStrLn "Done"
 
 -- TODO: Remove these and add as env variables?

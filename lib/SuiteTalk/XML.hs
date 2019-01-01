@@ -25,9 +25,6 @@ import           SuiteTalk.Auth.Types (Signature (..))
 newtype Header =
     Header TokenPassport
 
--- | Build a document using the WSDL for namespace generation
-buildDocument = undefined
-
 buildBody :: XML
 buildBody = element "getAll" $ do elementA "record" [("recordType", T.pack "state")] ("" :: Text)
 

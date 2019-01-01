@@ -15,7 +15,6 @@ module SuiteTalk.WSDL where
 
 data WSDL =
     WSDL Endpoint
-         [Namespace]
          [Operation]
 
 type Operation = String
@@ -24,8 +23,6 @@ data Endpoint =
     Endpoint Host
              Port
 
-type Namespace = (Path, Identifier)
-
 type Path = String
 
 type Identifier = String
@@ -33,6 +30,10 @@ type Identifier = String
 type Host = String
 
 type Port = String
+
+mkEndpointURL :: Endpoint -> String
+mkEndpointURL (Endpoint host "")   = host
+mkEndpointURL (Endpoint host port) = host ++ ":" ++ port
 {-
 fetch :: IO BsResponse
 fetch =
