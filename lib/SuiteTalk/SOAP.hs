@@ -30,12 +30,12 @@ send ::
     => WSDL -- ^ WSDL containing endpoint and operations
     -> String -- ^ SOAPAction to run
     -> header -- ^ SOAPAction header
-    -> body -- ^ SOAPAction body
+    -> (String -> body) -- ^ SOAPAction body
     -> IO (Either Error Document)
 send (WSDL endpoint operations) soapAction header body = do
     transport <- initTransportWithM managerSettings endpointURL printRequest printBody
     if validAction soapAction operations
-        then Right <$> invokeWS transport soapAction header body documentParser
+        then Right <$> invokeWS transport soapAction header (body soapAction) documentParser
         else pure $ Left InvalidAction
   where
     endpointURL = mkEndpointURL endpoint

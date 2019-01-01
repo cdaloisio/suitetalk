@@ -17,6 +17,7 @@ module SuiteTalk.XML
 
 import           Data.Text            (Text)
 import qualified Data.Text            as T
+import           Text.XML             (Name (..))
 import           Text.XML.Writer      (XML, element, elementA)
 
 import           SuiteTalk.Auth       (TokenPassport (..))
@@ -25,8 +26,10 @@ import           SuiteTalk.Auth.Types (Signature (..))
 newtype Header =
     Header TokenPassport
 
-buildBody :: XML
-buildBody = element "getAll" $ do elementA "record" [("recordType", T.pack "state")] ("" :: Text)
+buildBody :: String -> XML
+buildBody soapAction =
+    element (Name (T.pack soapAction) Nothing Nothing) $ do
+        elementA "record" [("recordType", T.pack "state")] ("" :: Text)
 
 -- | Take a @Header@ (which just wraps the TokenPassport) and convert it to XML
 buildHeader :: Header -> XML
