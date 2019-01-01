@@ -43,4 +43,4 @@ send (WSDL endpoint operations) soapAction header body = do
     documentParser = DocumentParser id
 
 validAction :: String -> [String] -> Bool
-validAction action operations = action `elem` operations
+validAction = elem
