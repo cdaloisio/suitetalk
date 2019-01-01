@@ -30,6 +30,7 @@ type Port = String
 mkEndpointURL :: Endpoint -> String
 mkEndpointURL (Endpoint host "")   = host
 mkEndpointURL (Endpoint host port) = host ++ ":" ++ port
+-- TODO: Fetch and parse the WSDL url into WSDL datatype
 {-
 fetch :: IO BsResponse
 fetch =

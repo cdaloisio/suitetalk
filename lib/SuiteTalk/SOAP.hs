@@ -35,6 +35,7 @@ send ::
 send (WSDL endpoint operations) soapAction header body = do
     transport <- initTransportWithM managerSettings endpointURL printRequest printBody
     if validAction soapAction operations
+       -- TODO: This will E.throw and needs to be caught
         then Right <$> invokeWS transport soapAction header (body soapAction) documentParser
         else pure $ Left InvalidAction
   where
