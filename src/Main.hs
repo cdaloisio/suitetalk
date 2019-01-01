@@ -7,13 +7,13 @@ import           Data.Text      (Text)
 import           SuiteTalk.Auth (generateTokenPassport)
 import           SuiteTalk.SOAP (send)
 import           SuiteTalk.WSDL (Endpoint (..), WSDL (..))
-import           SuiteTalk.XML  (Header (..), buildBody, buildHeader)
+import           SuiteTalk.XML  (Header (Header), Search (Search), buildBody, buildHeader)
 
 main :: IO ()
 main = do
     tokenPassport <- generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret
     let header = buildHeader $ Header tokenPassport
-    let body = buildBody
+    let body = buildBody $ Search "record" "state" ""
     let wsdl =
             WSDL
                 (Endpoint "https://webservices.netsuite.com/services/NetSuitePort_2018_1" "")

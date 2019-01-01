@@ -13,12 +13,12 @@ module SuiteTalk.XML
     ( buildHeader
     , buildBody
     , Header(..)
+    , Search(..)
     ) where
 
-import           Data.Text            (Text)
 import qualified Data.Text            as T
 import           Text.XML             (Name (..))
-import           Text.XML.Writer      (XML, element, elementA)
+import           Text.XML.Writer      (ToXML, XML, element, elementA, toXML)
 
 import           SuiteTalk.Auth       (TokenPassport (..))
 import           SuiteTalk.Auth.Types (Signature (..))
@@ -26,9 +26,28 @@ import           SuiteTalk.Auth.Types (Signature (..))
 newtype Header =
     Header TokenPassport
 
-buildBody :: String -> XML
-buildBody soapAction =
-    element soapAction' $ do elementA "record" [("recordType", T.pack "state")] ("" :: Text)
+-- TODO: Move this data type to it's own folder
+data Search =
+    Search SearchType
+           RecordType
+           Value
+
+instance ToXML Search where
+    toXML (Search searchType recordType value) =
+        elementA
+            (Name (T.pack searchType) Nothing Nothing)
+            [("recordType", T.pack recordType)]
+            (T.pack value)
+
+type SearchType = String
+
+type RecordType = String
+
+type Value = String
+
+-------
+buildBody :: (ToXML a) => a -> String -> XML
+buildBody attributes soapAction = element soapAction' $ toXML attributes
   where
     soapAction' = Name (T.pack soapAction) Nothing Nothing
 
