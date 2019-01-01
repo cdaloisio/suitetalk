@@ -28,8 +28,9 @@ newtype Header =
 
 buildBody :: String -> XML
 buildBody soapAction =
-    element (Name (T.pack soapAction) Nothing Nothing) $ do
-        elementA "record" [("recordType", T.pack "state")] ("" :: Text)
+    element soapAction' $ do elementA "record" [("recordType", T.pack "state")] ("" :: Text)
+  where
+    soapAction' = Name (T.pack soapAction) Nothing Nothing
 
 -- | Take a @Header@ (which just wraps the TokenPassport) and convert it to XML
 buildHeader :: Header -> XML
