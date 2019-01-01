@@ -30,7 +30,7 @@ send ::
     => WSDL -- ^ WSDL containing endpoint and operations
     -> String -- ^ SOAPAction to run
     -> header -- ^ SOAPAction header
-    -> (String -> body) -- ^ SOAPAction body
+    -> (String -> body) -- ^ SOAPAction body (which requires the SOAPAction passed in earlier)
     -> IO (Either Error Document)
 send (WSDL endpoint operations) soapAction header body = do
     transport <- initTransportWithM managerSettings endpointURL printRequest printBody

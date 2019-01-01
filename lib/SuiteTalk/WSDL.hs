@@ -23,10 +23,6 @@ data Endpoint =
     Endpoint Host
              Port
 
-type Path = String
-
-type Identifier = String
-
 type Host = String
 
 type Port = String
