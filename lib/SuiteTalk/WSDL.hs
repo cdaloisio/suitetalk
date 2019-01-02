@@ -24,23 +24,27 @@ import           Text.XML.Cursor
 data WSDL =
     WSDL Endpoint
          [Operation]
+    deriving (Eq, Show)
 
 type Operation = String
 
 data Endpoint =
     Endpoint Host
              Port
+    deriving (Eq, Show)
 
 type Host = String
 
 type Port = String
 
+data Error
+    = ParseError
+    | NoServiceUrl
+    deriving (Eq, Show)
+
 mkEndpointURL :: Endpoint -> String
 mkEndpointURL (Endpoint host "")   = host
 mkEndpointURL (Endpoint host port) = host ++ ":" ++ port
-
-data Error =
-    ParseError
 
 generateWSDLfromURL :: String -> IO (Either Error WSDL)
 generateWSDLfromURL url =
@@ -49,11 +53,14 @@ generateWSDLfromURL url =
 documentToWSDL :: Document -> Either Error WSDL
 documentToWSDL document =
     let cursor = fromDocument document
-        serviceURL =
-            child cursor >>= element "service" >>= child >>= element "port" >>= child >>=
-            laxElement "address" >>=
-            laxAttribute "location"
-     in Right $ WSDL (Endpoint (T.unpack $ head serviceURL) "") ["getAll"]
+        serviceUrlMatches =
+            cursor $// laxElement "service" &/ laxElement "port" &/ laxElement "address" &|
+            attribute "location"
+     in case serviceUrlMatches of
+            [] -> Left NoServiceUrl
+            matches -> do
+                let serviceUrl = T.unpack $ T.concat $ head matches
+                Right $ WSDL (Endpoint serviceUrl "") ["getAll"]
 
 parseResponse :: Response B8.ByteString -> Either SomeException Document
 parseResponse = parseLBS def . BS.fromStrict . getResponseBody

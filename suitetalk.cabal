@@ -90,3 +90,5 @@ test-suite test
     , suitetalk-lib
     , tasty == 1.2.*
     , tasty-hunit == 0.10.0.*
+    , data-default
+    , xml-conduit
