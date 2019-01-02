@@ -16,8 +16,10 @@ module SuiteTalk.WSDL where
 import           Control.Exception
 import qualified Data.ByteString.Char8 as B8
 import qualified Data.ByteString.Lazy  as BS
+import qualified Data.Text             as T
 import           Network.HTTP.Simple
 import           Text.XML
+import           Text.XML.Cursor
 
 data WSDL =
     WSDL Endpoint
@@ -37,9 +39,8 @@ mkEndpointURL :: Endpoint -> String
 mkEndpointURL (Endpoint host "")   = host
 mkEndpointURL (Endpoint host port) = host ++ ":" ++ port
 
-data Error
-    = ParseError
-    | UnknownError
+data Error =
+    ParseError
 
 generateWSDLfromURL :: String -> IO (Either Error WSDL)
 generateWSDLfromURL url =
@@ -47,8 +48,12 @@ generateWSDLfromURL url =
 
 documentToWSDL :: Document -> Either Error WSDL
 documentToWSDL document =
-    Right $
-    WSDL (Endpoint "https://webservices.netsuite.com/services/NetSuitePort_2018_1" "") ["getAll"]
+    let cursor = fromDocument document
+        serviceURL =
+            child cursor >>= element "service" >>= child >>= element "port" >>= child >>=
+            laxElement "address" >>=
+            laxAttribute "location"
+     in Right $ WSDL (Endpoint (T.unpack $ head serviceURL) "") ["getAll"]
 
 parseResponse :: Response B8.ByteString -> Either SomeException Document
 parseResponse = parseLBS def . BS.fromStrict . getResponseBody
