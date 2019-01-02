@@ -57,6 +57,8 @@ executable suitetalk
       base >=4.11 && <4.12
     , suitetalk-lib
     , text
+    , xml-conduit
+    , xml-conduit-writer
   hs-source-dirs:
     src
   default-language:

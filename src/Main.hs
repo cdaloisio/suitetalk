@@ -2,20 +2,46 @@
 
 module Main where
 
-import           Data.Text      (Text)
+import           Data.Text       (Text)
+import qualified Data.Text       as T
 import           System.Exit
+import           Text.XML        (Name (..))
+import           Text.XML.Writer (ToXML, element, elementA, toXML)
 
-import           SuiteTalk.Auth (generateTokenPassport)
-import           SuiteTalk.SOAP (send)
-import           SuiteTalk.WSDL (Endpoint (..), WSDL (..), generateWSDLfromURL)
-import           SuiteTalk.XML  (Header (Header), Search (Search), buildBody, buildHeader)
+import           SuiteTalk.Auth  (generateTokenPassport)
+import           SuiteTalk.SOAP  (send)
+import           SuiteTalk.WSDL  (generateWSDLfromURL)
+import           SuiteTalk.XML   (Header (Header), buildBody, buildHeader)
 
+--Sample datatypes
+--------
+data Search =
+    Search SearchType
+           RecordType
+           Value
+
+instance ToXML Search where
+    toXML (Search searchType recordType value) =
+        elementA
+            (Name (T.pack searchType) Nothing Nothing)
+            [("recordType", T.pack recordType)]
+            (T.pack value)
+
+type SearchType = String
+
+type RecordType = String
+
+type Value = String
+
+-------
 main :: IO ()
 main = do
     tokenPassport <- generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret
     wsdl <- generateWSDLfromURL "https://webservices.netsuite.com/wsdl/v2018_1_0/netsuite.wsdl"
     case wsdl of
-        Left _ -> exitFailure
+        Left err -> do
+            print err
+            exitFailure
         Right wsdl' -> do
             let header = buildHeader $ Header tokenPassport
             let body = buildBody $ Search "record" "state" ""

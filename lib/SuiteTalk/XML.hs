@@ -13,7 +13,6 @@ module SuiteTalk.XML
     ( buildHeader
     , buildBody
     , Header(..)
-    , Search(..)
     ) where
 
 import qualified Data.Text            as T
@@ -26,26 +25,6 @@ import           SuiteTalk.Auth.Types (Signature (..))
 newtype Header =
     Header TokenPassport
 
--- TODO: Move this data type to it's own folder
-data Search =
-    Search SearchType
-           RecordType
-           Value
-
-instance ToXML Search where
-    toXML (Search searchType recordType value) =
-        elementA
-            (Name (T.pack searchType) Nothing Nothing)
-            [("recordType", T.pack recordType)]
-            (T.pack value)
-
-type SearchType = String
-
-type RecordType = String
-
-type Value = String
-
--------
 buildBody :: (ToXML a) => a -> String -> XML
 buildBody attributes soapAction = element soapAction' $ toXML attributes
   where

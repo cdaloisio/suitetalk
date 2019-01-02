@@ -5,6 +5,7 @@ import           Test.Tasty.HUnit
 
 import           Data.Default
 import qualified Text.XML                as X
+import qualified Text.XML.Cursor         as C
 
 import           SuiteTalk.Auth.Internal
 import           SuiteTalk.Auth.Types
@@ -19,16 +20,64 @@ unitTests =
     [ testGroup
           "SuiteTalk.WSDL"
           [ testGroup
-                "documentToWSDL"
+                "serviceUrlMatches"
                 [ testCase "check result" $ do
                       document <- X.readFile def "tests/fixtures/netsuite.wsdl.xml"
-                      documentToWSDL document @?=
-                          Right
-                              (WSDL
-                                   (Endpoint
-                                        "https://webservices.netsuite.com/services/NetSuitePort_2018_1"
-                                        "")
-                                   ["getAll"])
+                      serviceUrlMatches' (C.fromDocument document) @?=
+                          [["https://webservices.netsuite.com/services/NetSuitePort_2018_1"]]
+                ]
+          , testGroup
+                "operationMatches"
+                [ testCase "check result" $ do
+                      document <- X.readFile def "tests/fixtures/netsuite.wsdl.xml"
+                      operationMatches' (C.fromDocument document) @?=
+                          [ ["login"]
+                          , ["ssoLogin"]
+                          , ["mapSso"]
+                          , ["changePassword"]
+                          , ["changeEmail"]
+                          , ["logout"]
+                          , ["add"]
+                          , ["delete"]
+                          , ["search"]
+                          , ["searchMore"]
+                          , ["searchMoreWithId"]
+                          , ["searchNext"]
+                          , ["update"]
+                          , ["upsert"]
+                          , ["addList"]
+                          , ["deleteList"]
+                          , ["updateList"]
+                          , ["upsertList"]
+                          , ["get"]
+                          , ["getList"]
+                          , ["getAll"]
+                          , ["getSavedSearch"]
+                          , ["getCustomizationId"]
+                          , ["initialize"]
+                          , ["initializeList"]
+                          , ["getSelectValue"]
+                          , ["getItemAvailability"]
+                          , ["getBudgetExchangeRate"]
+                          , ["getCurrencyRate"]
+                          , ["getDataCenterUrls"]
+                          , ["getPostingTransactionSummary"]
+                          , ["getServerTime"]
+                          , ["attach"]
+                          , ["detach"]
+                          , ["updateInviteeStatus"]
+                          , ["updateInviteeStatusList"]
+                          , ["asyncAddList"]
+                          , ["asyncUpdateList"]
+                          , ["asyncUpsertList"]
+                          , ["asyncDeleteList"]
+                          , ["asyncGetList"]
+                          , ["asyncInitializeList"]
+                          , ["asyncSearch"]
+                          , ["getAsyncResult"]
+                          , ["checkAsyncStatus"]
+                          , ["getDeleted"]
+                          ]
                 ]
           ]
     , testGroup
