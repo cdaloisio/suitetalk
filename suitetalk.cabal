@@ -1,4 +1,4 @@
-cabal-version:       >=1.10
+cabal-version:       2.2
 name:                suitetalk
 version:             0.0.1.0
 
@@ -22,7 +22,7 @@ license-file:        LICENSE
 author:              Chris D'Aloisio
 maintainer:          chris.daloisio@gmail.com
 copyright:           2018-2019 Chris D'Aloisio
--- category:
+category:            Web
 build-type:          Simple
 extra-source-files:
     ChangeLog.md
@@ -107,3 +107,7 @@ test-suite test
     , tasty-hunit == 0.10.0.*
     , data-default
     , xml-conduit
+
+source-repository head
+  type:     git
+  location: https://github.com/cdaloisio/suitetalk
