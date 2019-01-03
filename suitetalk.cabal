@@ -1,19 +1,32 @@
 cabal-version:       >=1.10
 name:                suitetalk
-version:             0.1.0.0
+version:             0.0.1.0
 
 homepage:            https://github.com/cdaloisio/suitetalk
 bug-reports:         https://github.com/cdaloisio/suitetalk/issues
--- synopsis:
--- description:
+synopsis:
+    Connection tools for Oracle Netsuite / SuiteTalk SOAP
+description:
+    .
+    Connection tools for Oracle Netsuite / SuiteTalk SOAP
+    .
+    This package is a work in progress.
+    .
+    It currently contains:
+    .
+    - modules for making requests to Netsuite via SuiteTalk SOAP
+    - capability for Token authentication
+    - validations for operations and request endpoint generated via a WSDL specification
 license:             MPL-2.0
 license-file:        LICENSE
 author:              Chris D'Aloisio
-maintainer:          chris.daloisio@bellroy.com
-copyright:           2018 Chris D'Aloisio
+maintainer:          chris.daloisio@gmail.com
+copyright:           2018-2019 Chris D'Aloisio
 -- category:
 build-type:          Simple
-extra-source-files:  ChangeLog.md
+extra-source-files:
+    ChangeLog.md
+    README.md
 
 library suitetalk-lib
   exposed-modules:
