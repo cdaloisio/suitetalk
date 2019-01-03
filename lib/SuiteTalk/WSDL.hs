@@ -22,6 +22,19 @@ import           Network.HTTP.Simple
 import           Text.XML
 import           Text.XML.Cursor
 
+-- * Primary functions
+--
+-- | Given the URL of a WSDL, download, parse and convert to the WSDL data type
+generateWSDLfromURL :: String -> IO (Either Error WSDL)
+generateWSDLfromURL url =
+    (either (const $ Left XmlParseError) documentToWSDL . parseResponse) <$> fetchWSDL url
+
+-- | Create the endpoint URL string from the @Endpoint@ data type
+mkEndpointURL :: Endpoint -> String
+mkEndpointURL (Endpoint host "")   = host
+mkEndpointURL (Endpoint host port) = host ++ ":" ++ port
+
+-- * Data types
 data WSDL =
     WSDL Endpoint
          [Operation]
@@ -44,23 +57,17 @@ data Error
     | NoOperations
     deriving (Eq, Show)
 
-mkEndpointURL :: Endpoint -> String
-mkEndpointURL (Endpoint host "")   = host
-mkEndpointURL (Endpoint host port) = host ++ ":" ++ port
+-- * Internal helper functions
+parseResponse :: Response B8.ByteString -> Either SomeException Document
+parseResponse = parseLBS def . BS.fromStrict . getResponseBody
 
-generateWSDLfromURL :: String -> IO (Either Error WSDL)
-generateWSDLfromURL url =
-    (either (const $ Left XmlParseError) documentToWSDL . parseResponse) <$> fetchWSDL url
+fetchWSDL :: String -> IO (Response B8.ByteString)
+fetchWSDL wsdlUrl = httpBS $ parseRequest_ wsdlUrl
 
 documentToWSDL :: Document -> Either Error WSDL
 documentToWSDL document =
     let cursor = fromDocument document
      in WSDL <$> serviceUrlMatches cursor <*> operationMatches cursor
-
-serviceUrlMatches' :: Cursor -> [[T.Text]]
-serviceUrlMatches' cursor =
-    cursor $// laxElement "service" &/ laxElement "port" &/ laxElement "address" &|
-    attribute "location"
 
 serviceUrlMatches :: Cursor -> Either Error Endpoint
 serviceUrlMatches cursor =
@@ -68,18 +75,17 @@ serviceUrlMatches cursor =
         []      -> Left NoServiceUrl
         matches -> Right $ Endpoint (T.unpack $ T.concat $ head matches) ""
 
-operationMatches' :: Cursor -> [[T.Text]]
-operationMatches' cursor =
-    cursor $// laxElement "portType" &/ laxElement "operation" &| attribute "name"
-
 operationMatches :: Cursor -> Either Error [Operation]
 operationMatches cursor =
     case operationMatches' cursor of
         []      -> Left NoOperations
         matches -> Right $ map T.unpack $ L.concat matches
 
-parseResponse :: Response B8.ByteString -> Either SomeException Document
-parseResponse = parseLBS def . BS.fromStrict . getResponseBody
+serviceUrlMatches' :: Cursor -> [[T.Text]]
+serviceUrlMatches' cursor =
+    cursor $// laxElement "service" &/ laxElement "port" &/ laxElement "address" &|
+    attribute "location"
 
-fetchWSDL :: String -> IO (Response B8.ByteString)
-fetchWSDL wsdlUrl = httpBS $ parseRequest_ wsdlUrl
+operationMatches' :: Cursor -> [[T.Text]]
+operationMatches' cursor =
+    cursor $// laxElement "portType" &/ laxElement "operation" &| attribute "name"

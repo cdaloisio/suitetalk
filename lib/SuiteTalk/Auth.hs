@@ -13,10 +13,7 @@
 -- It is probably better to use the helper function instead as it will
 -- construct the nonce and signature for you.
 --
-module SuiteTalk.Auth
-    ( TokenPassport(..)
-    , generateTokenPassport
-    ) where
+module SuiteTalk.Auth where
 
 import           SuiteTalk.Auth.Internal
 import           SuiteTalk.Auth.Types

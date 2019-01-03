@@ -8,9 +8,7 @@
 --
 -- Provides a simple wrapper around the Network.SOAP library
 --
-module SuiteTalk.SOAP
-    ( send
-    ) where
+module SuiteTalk.SOAP where
 
 import           Network.HTTP.Client.TLS     (tlsManagerSettings)
 import           Network.SOAP                (ResponseParser (DocumentParser), invokeWS)
@@ -34,7 +32,7 @@ send ::
     -> IO (Either Error Document)
 send (WSDL endpoint operations) soapAction header body = do
     transport <- initTransportWithM managerSettings endpointURL printRequest printBody
-    if validAction soapAction operations
+    if soapAction `elem` operations
        -- TODO: This will E.throw and needs to be caught
         then Right <$> invokeWS transport soapAction header (body soapAction) documentParser
         else pure $ Left InvalidAction
@@ -42,6 +40,3 @@ send (WSDL endpoint operations) soapAction header body = do
     endpointURL = mkEndpointURL endpoint
     managerSettings = tlsManagerSettings
     documentParser = DocumentParser id
-
-validAction :: String -> [String] -> Bool
-validAction = elem

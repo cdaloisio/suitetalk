@@ -13,8 +13,7 @@ import           SuiteTalk.SOAP  (send)
 import           SuiteTalk.WSDL  (generateWSDLfromURL)
 import           SuiteTalk.XML   (Header (Header), buildBody, buildHeader)
 
---Sample datatypes
---------
+-- Sample datatypes for SuiteTalk query
 data Search =
     Search SearchType
            RecordType
@@ -33,7 +32,7 @@ type RecordType = String
 
 type Value = String
 
--------
+-- Example request
 main :: IO ()
 main = do
     tokenPassport <- generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret
@@ -47,10 +46,9 @@ main = do
             let body = buildBody $ Search "record" "state" ""
             response <- send wsdl' "getAll" header body
             print response
-            putStrLn "Done"
 
--- TODO: Remove these and add as env variables?
--- Some sample information for testing
+-- These are dummy values. You will need to provide your own credentials to
+-- make a successful request.
 account :: String
 account = "3186263_SB2"
 

@@ -2,8 +2,8 @@ cabal-version:       >=1.10
 name:                suitetalk
 version:             0.1.0.0
 
-homepage:            https://github.com/tricycle/suitetalk
-bug-reports:         https://github.com/tricycle/suitetalk/issues
+homepage:            https://github.com/cdaloisio/suitetalk
+bug-reports:         https://github.com/cdaloisio/suitetalk/issues
 -- synopsis:
 -- description:
 license:             MPL-2.0
@@ -48,9 +48,9 @@ library suitetalk-lib
   ghc-options:
     -Wall
 
-executable suitetalk
+executable suitetalk-example
   main-is:
-    Main.hs
+    Example.hs
   -- other-modules:
   -- other-extensions:
   build-depends:

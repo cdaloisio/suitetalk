@@ -9,11 +9,7 @@
 -- This module contains helpers for constructing valid SOAP requests to
 -- Netsuite.
 --
-module SuiteTalk.XML
-    ( buildHeader
-    , buildBody
-    , Header(..)
-    ) where
+module SuiteTalk.XML where
 
 import qualified Data.Text            as T
 import           Text.XML             (Name (..))
@@ -22,9 +18,12 @@ import           Text.XML.Writer      (ToXML, XML, element, elementA, toXML)
 import           SuiteTalk.Auth       (TokenPassport (..))
 import           SuiteTalk.Auth.Types (Signature (..))
 
+-- | Wrap the Header in a newtype for now to allow later expansion for
+-- other authentication types
 newtype Header =
     Header TokenPassport
 
+-- | Given any type that has an instance for @ToXML@, generate the body for the request
 buildBody :: (ToXML a) => a -> String -> XML
 buildBody attributes soapAction = element soapAction' $ toXML attributes
   where
