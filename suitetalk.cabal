@@ -40,18 +40,18 @@ library suitetalk-lib
   -- other-extensions:
   build-depends:
       base >=4.11 && <4.12
-    , bytestring
-    , data-default
-    , http-client
-    , http-client-tls
-    , http-conduit
-    , random
-    , soap
-    , text
-    , xml-conduit
-    , xml-conduit-writer
-    , cryptonite == 0.25.*
-    , time == 1.8.*
+    , bytestring >= 0.10.8 && < 0.11
+    , data-default >= 0.7.1 && < 0.8
+    , http-client >= 0.5.14 && < 0.6
+    , text >= 1.2.3 && < 1.3
+    , random >= 1.1 && < 1.2
+    , http-client-tls >= 0.3.5 && < 0.4
+    , http-conduit >= 2.3.4 && < 2.4
+    , soap >= 0.2.3 && < 0.3
+    , xml-conduit >= 1.8.0 && < 1.9
+    , xml-conduit-writer >= 0.1.1 && < 0.2
+    , cryptonite >= 0.25 && < 0.26
+    , time >= 1.8 && < 1.9
   hs-source-dirs:
     lib
   default-language:
