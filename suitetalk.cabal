@@ -17,6 +17,8 @@ description:
     - modules for making requests to Netsuite via SuiteTalk SOAP
     - capability for Token authentication
     - validations for operations and request endpoint generated via a WSDL specification
+    .
+    Check the example executable in `src/Example.hs` for more details on how to use it.
 license:             MPL-2.0
 license-file:        LICENSE
 author:              Chris D'Aloisio
