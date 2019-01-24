@@ -14,10 +14,10 @@
 module SuiteTalk.WSDL where
 
 import           Control.Exception
-import qualified Data.ByteString.Char8 as B8
-import qualified Data.ByteString.Lazy  as BS
-import qualified Data.List             as L
-import qualified Data.Text             as T
+import qualified Data.ByteString.Char8         as B8
+import qualified Data.ByteString.Lazy          as BS
+import qualified Data.List                     as L
+import qualified Data.Text                     as T
 import           Network.HTTP.Simple
 import           Text.XML
 import           Text.XML.Cursor
@@ -27,11 +27,12 @@ import           Text.XML.Cursor
 -- | Given the URL of a WSDL, download, parse and convert to the WSDL data type
 generateWSDLfromURL :: String -> IO (Either Error WSDL)
 generateWSDLfromURL url =
-    (either (const $ Left XmlParseError) documentToWSDL . parseResponse) <$> fetchWSDL url
+    (either (const $ Left XmlParseError) documentToWSDL . parseResponse)
+        <$> fetchWSDL url
 
 -- | Create the endpoint URL string from the @Endpoint@ data type
 mkEndpointURL :: Endpoint -> String
-mkEndpointURL (Endpoint host "")   = host
+mkEndpointURL (Endpoint host ""  ) = host
 mkEndpointURL (Endpoint host port) = host ++ ":" ++ port
 
 -- * Data types
@@ -67,25 +68,27 @@ fetchWSDL wsdlUrl = httpBS $ parseRequest_ wsdlUrl
 documentToWSDL :: Document -> Either Error WSDL
 documentToWSDL document =
     let cursor = fromDocument document
-     in WSDL <$> serviceUrlMatches cursor <*> operationMatches cursor
+    in  WSDL <$> serviceUrlMatches cursor <*> operationMatches cursor
 
 serviceUrlMatches :: Cursor -> Either Error Endpoint
-serviceUrlMatches cursor =
-    case serviceUrlMatches' cursor of
-        []      -> Left NoServiceUrl
-        matches -> Right $ Endpoint (T.unpack $ T.concat $ head matches) ""
+serviceUrlMatches cursor = case serviceUrlMatches' cursor of
+    []      -> Left NoServiceUrl
+    matches -> Right $ Endpoint (T.unpack $ T.concat $ head matches) ""
 
 operationMatches :: Cursor -> Either Error [Operation]
-operationMatches cursor =
-    case operationMatches' cursor of
-        []      -> Left NoOperations
-        matches -> Right $ map T.unpack $ L.concat matches
+operationMatches cursor = case operationMatches' cursor of
+    []      -> Left NoOperations
+    matches -> Right $ map T.unpack $ L.concat matches
 
 serviceUrlMatches' :: Cursor -> [[T.Text]]
 serviceUrlMatches' cursor =
-    cursor $// laxElement "service" &/ laxElement "port" &/ laxElement "address" &|
-    attribute "location"
+    cursor
+        $// laxElement "service"
+        &/  laxElement "port"
+        &/  laxElement "address"
+        &|  attribute "location"
 
 operationMatches' :: Cursor -> [[T.Text]]
 operationMatches' cursor =
-    cursor $// laxElement "portType" &/ laxElement "operation" &| attribute "name"
+    cursor $// laxElement "portType" &/ laxElement "operation" &| attribute
+        "name"

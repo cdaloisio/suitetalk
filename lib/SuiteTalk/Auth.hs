@@ -31,16 +31,23 @@ data TokenPassport =
 
 -- | Create a valid tokenPassport.
 -- You will want to use this to pass in the result to your SOAP client.
-generateTokenPassport ::
-       Account -- ^ Netsuite Account ID
+generateTokenPassport
+    :: Account -- ^ Netsuite Account ID
     -> ConsumerKey -- ^ ConsumerKey from your Netsuite application (under integrations)
     -> ConsumerSecret -- ^ ConsumerSecret from your Netsuite application (under integrations)
     -> TokenId -- ^ Netsuite user access token ID
     -> TokenSecret -- ^ Netsuite user access token secret
     -> IO TokenPassport
-generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret = do
-    currentTime <- getCurrentTime
-    nonce <- generateNonce
-    pure $ TokenPassport account consumerKey tokenId nonce currentTime (signature nonce currentTime)
+generateTokenPassport account consumerKey consumerSecret tokenId tokenSecret =
+    do
+        currentTime <- getCurrentTime
+        nonce       <- generateNonce
+        pure $ TokenPassport account
+                             consumerKey
+                             tokenId
+                             nonce
+                             currentTime
+                             (signature nonce currentTime)
   where
-    signature = generateSignature consumerSecret tokenSecret account consumerKey tokenId
+    signature =
+        generateSignature consumerSecret tokenSecret account consumerKey tokenId

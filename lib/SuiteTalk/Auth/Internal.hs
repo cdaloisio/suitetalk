@@ -12,18 +12,22 @@ module SuiteTalk.Auth.Internal where
 
 import           Crypto.Hash
 import           Crypto.MAC.HMAC
-import qualified Data.ByteString       as B (intercalate)
-import qualified Data.ByteString.Char8 as BS (ByteString, pack)
-import           Data.Time.Clock.POSIX (getPOSIXTime)
-import           System.Random         (newStdGen)
+import qualified Data.ByteString               as B
+                                                ( intercalate )
+import qualified Data.ByteString.Char8         as BS
+                                                ( ByteString
+                                                , pack
+                                                )
+import           Data.Time.Clock.POSIX          ( getPOSIXTime )
+import           System.Random                  ( newStdGen )
 
 import           SuiteTalk.Auth.Types
 
 -- * Signature generation
 --
 -- | Create a Signature to be used with Netsuite SOAP requests with HMAC SHA1 algorithm
-generateSignature ::
-       ConsumerSecret
+generateSignature
+    :: ConsumerSecret
     -> TokenSecret
     -> Account
     -> ConsumerKey
@@ -31,11 +35,15 @@ generateSignature ::
     -> Nonce
     -> Timestamp
     -> Signature
-generateSignature consumerSecret tokenSecret account consumerKey tokenId nonce timestamp =
-    let signatureData = generateSignatureData account consumerKey tokenId nonce timestamp
-        signatureKey = generateSignatureKey consumerSecret tokenSecret
-        value = show $ hmacGetDigest (hmac signatureKey signatureData :: HMAC SHA1)
-     in Signature HMACSHA256 value
+generateSignature consumerSecret tokenSecret account consumerKey tokenId nonce timestamp
+    = let
+          signatureData =
+              generateSignatureData account consumerKey tokenId nonce timestamp
+          signatureKey = generateSignatureKey consumerSecret tokenSecret
+          value        = show
+              $ hmacGetDigest (hmac signatureKey signatureData :: HMAC SHA1)
+      in
+          Signature HMACSHA256 value
 
 -- | Generates a random alpha-numeric string of 20 characters for the request nonce
 generateNonce :: IO String
@@ -56,7 +64,8 @@ generateSignatureKey consumerSecret tokenSecret =
     B.intercalate "&" [BS.pack consumerSecret, BS.pack tokenSecret]
 
 -- | Create signature data according to SuiteTalk documentation (interalating with @&@)
-generateSignatureData :: Account -> ConsumerKey -> TokenId -> Nonce -> Timestamp -> BS.ByteString
+generateSignatureData
+    :: Account -> ConsumerKey -> TokenId -> Nonce -> Timestamp -> BS.ByteString
 generateSignatureData account consumerKey tokenId nonce timestamp =
     B.intercalate
         "&"
