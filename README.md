@@ -1,6 +1,6 @@
 # `SuiteTalk`: Connection tools for Oracle Netsuite / SuiteTalk SOAP
 
-This package is a work in progress.
+This package is a work in progress - and my first Haskell package!
 
 It currently contains:
 
