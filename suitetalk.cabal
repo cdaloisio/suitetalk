@@ -24,13 +24,14 @@ license-file:        LICENSE
 author:              Chris D'Aloisio
 maintainer:          chris.daloisio@gmail.com
 copyright:           2018-2019 Chris D'Aloisio
-category:            Web
+category:            Network
 build-type:          Simple
 extra-source-files:
     ChangeLog.md
     README.md
+tested-with: GHC == 8.4.4
 
-library suitetalk-lib
+library
   exposed-modules:
     SuiteTalk.Auth
     SuiteTalk.Auth.Types
@@ -38,8 +39,6 @@ library suitetalk-lib
     SuiteTalk.SOAP
     SuiteTalk.WSDL
     SuiteTalk.XML
-  -- other-modules:
-  -- other-extensions:
   build-depends:
       base >=4.11 && <4.12
     , bytestring >= 0.10.8 && < 0.11
@@ -63,33 +62,38 @@ library suitetalk-lib
   ghc-options:
     -Wall
 
+flag example
+  description: Build the example program
+  default:     False
+  manual:      True
+
 executable suitetalk-example
   main-is:
     Example.hs
-  -- other-modules:
-  -- other-extensions:
-  build-depends:
-      base >=4.11 && <4.12
-    , suitetalk-lib
-    , text
-    , xml-conduit
-    , xml-conduit-writer
   hs-source-dirs:
     src
+  if flag(example)
+    buildable: True
+    build-depends:
+        base >=4.11 && <4.12
+      , suitetalk
+      , text
+      , xml-conduit
+      , xml-conduit-writer
+  else
+    buildable: False
   default-language:
     Haskell2010
 
 executable suitetalk-generate-datatypes
   main-is:
     Generate.hs
-  -- other-modules:
-  -- other-extensions:
-  build-depends:
-      base >=4.11 && <4.12
-    , suitetalk-lib
-    , text
   hs-source-dirs:
     src
+  build-depends:
+      base >=4.11 && <4.12
+    , suitetalk
+    , text
   default-language:
     Haskell2010
 
@@ -104,7 +108,7 @@ test-suite test
     test.hs
   build-depends:
       base >= 4 && < 5
-    , suitetalk-lib
+    , suitetalk
     , tasty == 1.2.*
     , tasty-hunit == 0.10.0.*
     , data-default
